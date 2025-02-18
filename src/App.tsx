@@ -9,7 +9,7 @@ import NavigationMenu from './components/navigation-menu/NavigationMenu';
 
 function App() {
   return (
-    <div className='container'>
+    <div className='container-xxl' style={{maxWidth:"1440px"}}>
       <BrowserRouter>
         <Header/>
         <div className='d-flex'>

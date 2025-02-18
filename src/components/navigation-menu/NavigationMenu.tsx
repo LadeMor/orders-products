@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const NavigationMenu = () => {
     return (
-        <div className="w-25 shadow min-vh-100 d-flex flex-column align-items-center py-5 gap-4">
+        <div className="shadow min-vh-100 d-flex flex-column align-items-center px-5 py-5 gap-4">
             <div className="position-relative"
                 >
                 <img style={{width:"150px"}} src={person} alt="Person profile picture" />
