@@ -3,10 +3,34 @@ import trash from "../../assets/icons/trash.svg";
 import arrow_right from "../../assets/icons/arrow_right.svg";
 import monitor from "../../assets/img/monitor.webp";
 import close from "../../assets/icons/close.svg";
+import { useEffect, useState } from "react";
 
 const Orders = () => {
 
     const arr = [0, 0, 0, 0, 0];
+
+    const [ordersList, setOrdersList] = useState();
+
+    useEffect(() => {
+        const fetchOrders =  async () => {
+            try{
+                const response = await fetch("http://localhost:3002/api/orders?limit=5&offset=0", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }});
+
+                if(response.ok){
+                    const data = await response.json();
+                    console.log(data);
+                }
+            }catch(error){
+                console.error("Error loading orders: " + error);
+            }
+        }
+
+        fetchOrders();
+    }, [])
 
     return (
         <section className="p-4 w-100">
