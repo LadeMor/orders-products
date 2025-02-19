@@ -2,8 +2,9 @@ import menu from "../../assets/icons/menu.svg";
 import trash from "../../assets/icons/trash.svg";
 import arrow_right from "../../assets/icons/arrow_right.svg";
 import monitor from "../../assets/img/monitor.webp";
+import close from "../../assets/icons/close.svg";
 
-const Main = () => {
+const Orders = () => {
 
     const arr = [0, 0, 0, 0, 0];
 
@@ -29,13 +30,18 @@ const Main = () => {
                                     rounded
                                     custom-order-hover  
                                     ">
-                            <div className="d-flex align-items-center 
-                                    justify-content-between gap-3 p-2">
-                                {/* <h2 className="fs-4 m-0 text-decoration-underline"
+                            <div className="
+                            d-flex 
+                            align-items-center 
+                            justify-content-between 
+                            w-100
+                            gap-3 
+                            p-2">
+                                <h2 className="fs-4 m-0 text-decoration-underline"
                                         style={{ cursor: "pointer" }}
                                     >
                                         Not long order name
-                                    </h2> */}
+                                    </h2>
                                 <span className="d-flex align-items-center gap-2"
                                     style={{ cursor: "pointer" }}>
                                     <img
@@ -54,18 +60,19 @@ const Main = () => {
                                     <p className="m-0" >2500$</p>
                                     <p className="m-0">250 000.50 UAH</p>
                                 </span>
-                                {/* <img style={{ cursor: "pointer" }} src={trash} alt="Trash icon" /> */}
+                                <img style={{ cursor: "pointer" }} src={trash} alt="Trash icon" />
                             </div>
-                            <span
+                            {/* <span
                                 className="h-100 d-flex align-items-center justify-content-center p-3"
                                 style={{ backgroundColor: "lightgray" }}>
                                 <img src={arrow_right} alt="Arrow right icon" />
-                            </span>
+                            </span> */}
                         </div>
                     ))}
                 </div>
-                <div className="border p-2
-                rounded custom-flex-grow-2 p-3">
+                {/* <div className="border p-2
+                rounded custom-flex-grow-2 p-3
+                position-relative">
                     <h2>Long order name...</h2>
                     <div className="d-flex align-items-center gap-2 mb-3">
                         <button
@@ -92,10 +99,21 @@ const Main = () => {
                             ))
                         }
                     </div>
-                </div>
+                    <button className="
+                    position-absolute 
+                    
+                    rounded-circle 
+                    bg-white 
+                    border-0 
+                    translate-middle 
+                    shadow"
+                    style={{width:"50px", height: "50px", top:"0px", right:"-50px"}}>
+                        <img src={close} alt="Close icon" />
+                    </button>
+                </div> */}
             </div>
         </section>
     );
 }
 
-export default Main;
+export default Orders;

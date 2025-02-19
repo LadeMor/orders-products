@@ -3,9 +3,10 @@ import {
   BrowserRouter
   , Route, Routes
 } from 'react-router-dom';
-import Main from './pages/main/Main';
+import Orders from './pages/orders/Orders';
 import Header from './components/header/Header';
 import NavigationMenu from './components/navigation-menu/NavigationMenu';
+import Products from './pages/products/Products';
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
         <div className='d-flex'>
           <NavigationMenu/>
           <Routes>
-            <Route path="/" element={<Main/>} />
+            <Route path="/" element={<Orders/>} />
+            <Route path="/products" element={<Products/>}/>
           </Routes>
         </div>
       </BrowserRouter>
