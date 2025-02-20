@@ -12,8 +12,6 @@ import arrow_right from "../../assets/icons/arrow_right.svg";
 import monitor from "../../assets/img/monitor.webp";
 import close from "../../assets/icons/close.svg";
 
-
-
 const Orders = () => {
 
     const arr = [0, 0, 0, 0, 0]
@@ -31,14 +29,10 @@ const Orders = () => {
     }, [dispatch])
 
     useEffect(() => {
-        if(selectedOrderId){
-            dispatch(fetchProductByOrderID({orderId: selectedOrderId, limit: 5, offset: 0}))
+        if (selectedOrderId) {
+            dispatch(fetchProductByOrderID({ orderId: selectedOrderId, limit: 5, offset: 0 }))
         }
     }, [selectedOrderId, dispatch])
-
-    useEffect(() => {
-        console.log("Обновлённые продукты:", products);
-    }, [products]); 
 
     const formatOrderDate = (date: string): string => {
         const dateToFormat = new Date(date);
@@ -61,11 +55,15 @@ const Orders = () => {
     if (ordersError) return <h1>Error</h1>
 
     const renderProductListByOrder = () => {
-        if(productsLoading){
-            return <h1>Loading products</h1>
-        }else if(productsError){
-            return <h1>Error</h1>
-        }else if(!productsLoading && !productsError){
+        if (productsLoading) {
+            return <h1 className="fs-3">Loading products</h1>
+        } else if (productsError) {
+            return <h1 className="fs-3">Error</h1>
+        }
+        else if(products.length <= 0){
+            return <h1 className="fs-3">There are no products in this order</h1>
+        }
+        else if (!productsLoading && !productsError) {
             return products.map(item => (
                 <div className="d-flex justify-content-between align-items-center border-top p-2">
                     <div className="d-flex align-items-center gap-4">
@@ -73,8 +71,8 @@ const Orders = () => {
                             className="rounded-circle bg-success"></div>
                         <img src={monitor} alt="Product photo" style={{ width: "60px" }} />
                         <div>
-                            <h2 className="m-0 fs-5">Product 1</h2>
-                            <p className="m-0">SN-12.3454783</p>
+                            <h2 className="m-0 fs-5">{item.title}</h2>
+                            <p className="m-0">{item.product_type}</p>
                         </div>
                         <h2 className="m-0 fs-5 text-success">Available</h2>
                     </div>
@@ -140,10 +138,15 @@ const Orders = () => {
                                     <p className="m-0">04/12</p>
                                     <p className="m-0">{formatOrderDate(order.date)}</p>
                                 </span>
-                                <span>
-                                    <p className="m-0" >2500$</p>
-                                    <p className="m-0">250 000.50 UAH</p>
-                                </span>
+                                {
+                                    !displayProductData ?
+                                        <span>
+                                            <p className="m-0" >{order.total_price_usd}$</p>
+                                            <p className="m-0">{order.total_price_uah} UAH</p>
+                                        </span>
+                                        :
+                                        null
+                                }
                                 {
                                     !displayProductData ? <img style={{ cursor: "pointer" }} src={trash} alt="Trash icon" /> : null
                                 }

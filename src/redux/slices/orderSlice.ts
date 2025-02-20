@@ -4,6 +4,8 @@ export interface Order{
     id: number,
     title: string,
     date: string,
+    total_price_uah: number,
+    total_price_usd: number,
     productsIds: number[]
 }
 

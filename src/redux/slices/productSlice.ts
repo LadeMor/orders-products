@@ -17,9 +17,14 @@ interface Guarantees{
 
 export interface Product {
     id: number,
+    serial_number: number,
+    is_new: boolean,
+    photo: string,
     title: string,
+    product_type:string,
     price: number,
-    orderId: number,
+    specification: string,
+    order_id: number,
     prices: Price[],
     guarantees: Guarantees[]
 }
