@@ -1,36 +1,25 @@
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { fetchOrders, selectOrder } from "../../redux/slices/orderSlice";
+import { RootState } from "../../redux/store";
+
 import menu from "../../assets/icons/menu.svg";
 import trash from "../../assets/icons/trash.svg";
 import arrow_right from "../../assets/icons/arrow_right.svg";
 import monitor from "../../assets/img/monitor.webp";
 import close from "../../assets/icons/close.svg";
-import { useEffect, useState } from "react";
 
 const Orders = () => {
 
-    const arr = [0, 0, 0, 0, 0];
-
-    const [ordersList, setOrdersList] = useState();
+    const dispatch = useAppDispatch();
+    const {list, loading, error} = useAppSelector((state: RootState) => state.orders);
 
     useEffect(() => {
-        const fetchOrders =  async () => {
-            try{
-                const response = await fetch("http://localhost:3002/api/orders?limit=5&offset=0", {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }});
+        dispatch(fetchOrders())
+    }, [dispatch])
 
-                if(response.ok){
-                    const data = await response.json();
-                    console.log(data);
-                }
-            }catch(error){
-                console.error("Error loading orders: " + error);
-            }
-        }
-
-        fetchOrders();
-    }, [])
+    if (loading) return <h1>Loading...</h1>
+    if(error) return <h1>Error</h1>
 
     return (
         <section className="p-4 w-100">
@@ -43,8 +32,9 @@ const Orders = () => {
             </div>
             <div className=" d-flex flex-row align-items-start gap-1" style={{ height: "70px" }}>
                 <div className=" h-100 w-100 d-flex flex-column gap-2 custom-flex-grow-1">
-                    {arr.map(item => (
+                    {list.map((order, index) => (
                         <div
+                        key={index}
                             className="
                                     d-flex align-items-center 
                                     justify-content-between
@@ -64,7 +54,7 @@ const Orders = () => {
                                 <h2 className="fs-4 m-0 text-decoration-underline"
                                         style={{ cursor: "pointer" }}
                                     >
-                                        Not long order name
+                                        {order.title}
                                     </h2>
                                 <span className="d-flex align-items-center gap-2"
                                     style={{ cursor: "pointer" }}>
@@ -78,7 +68,7 @@ const Orders = () => {
                                 </span>
                                 <span>
                                     <p className="m-0">04/12</p>
-                                    <p className="m-0">06/April/2017</p>
+                                    <p className="m-0">{order.date}</p>
                                 </span>
                                 <span>
                                     <p className="m-0" >2500$</p>
