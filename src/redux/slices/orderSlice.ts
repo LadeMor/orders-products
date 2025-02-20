@@ -21,8 +21,8 @@ const initialState : OrdersState = {
     error: null
 }
 
-export const fetchOrders = createAsyncThunk("orders/fetchOrders", async () => {
-    const response = await fetch("http://localhost:3002/api/orders?limit=5&offset=0");
+export const fetchOrders = createAsyncThunk("orders/fetchOrders", async ({limit, offset}: {limit: number; offset: number}) => {
+    const response = await fetch(`http://localhost:3002/api/orders?limit=${limit}&offset=${offset}`);
     return response.json();
 });
 
