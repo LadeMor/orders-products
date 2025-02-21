@@ -16,13 +16,14 @@ const Orders = () => {
 
     const [displayProductData, setDisplayProductData] = useState<boolean>(false);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+    const [totalOrders, setTotalOrders] = useState<number | null>(null);
 
     const dispatch = useAppDispatch();
     const { list: orders, loading: ordersLoading, error: ordersError } = useAppSelector((state: RootState) => state.orders);
     const { list: products, loading: productsLoading, error: productsError } = useAppSelector((state: RootState) => state.products);
 
     useEffect(() => {
-        dispatch(fetchOrders({ limit: 5, offset: 0 }))
+        dispatch(fetchOrders({ limit: 5, offset: 0 }));
     }, [dispatch])
 
     useEffect(() => {
@@ -30,6 +31,12 @@ const Orders = () => {
             dispatch(fetchProductByOrderID({ orderId: selectedOrderId, limit: 5, offset: 0 }))
         }
     }, [selectedOrderId, dispatch])
+
+    useEffect(() => {
+        if (orders.length > 0) {
+            setTotalOrders(orders[0].total_orders);
+        }
+    }, [orders])
 
     const onOrderClick = (orderId: number): void => {
         setSelectedOrderId(orderId);
@@ -50,7 +57,7 @@ const Orders = () => {
         } else if (productsError) {
             return <h1 className="fs-3">Error</h1>
         }
-        else if(products.length <= 0){
+        else if (products.length <= 0) {
             return <h1 className="fs-3">There are no products in this order</h1>
         }
         else if (!productsLoading && !productsError) {
@@ -79,15 +86,15 @@ const Orders = () => {
                     className="fs-4 bg-success text-white rounded-circle border-0 d-flex align-items-center
                 justify-content-center"
                     style={{ width: "40px", height: "40px" }}>+</button>
-                <h1 className="fs-2 m-0">Orders / {orders.length}</h1>
+                <h1 className="fs-2 m-0">Orders / {totalOrders ? totalOrders : "Loading..."}</h1>
             </div>
             <div className=" d-flex flex-row align-items-start gap-1 " style={{ height: "70px" }}>
-                <div className="d-flex flex-column gap-2 custom-flex-grow-1">
+                <div className="h-100 d-flex flex-column gap-2 custom-flex-grow-1">
                     {orders.map((order, index) => (
                         <div
                             onClick={() => onOrderClick(order.id)}
                             key={index}
-                            style={{ whiteSpace: "nowrap", minWidth:"100px"}}
+                            style={{ whiteSpace: "nowrap", minWidth: "100px" }}
                             className="
                                 
                                     d-flex align-items-center 
@@ -157,6 +164,11 @@ const Orders = () => {
                             }
                         </div>
                     ))}
+                    <div className="d-flex justify-content-center align-items-center gap-3">
+                        <button>Previous</button>
+                        <p className="m-0">1</p>
+                        <button>Next</button>
+                    </div>
                 </div>
                 {
                     displayProductData

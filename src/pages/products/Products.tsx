@@ -4,14 +4,13 @@ import { Product, fetchProducts } from "../../redux/slices/productSlice";
 import { RootState } from "../../redux/store";
 import { addZero, formatItemDate, formatItemTime } from "../../utils/dateUtils";
 
-
-
 import menu from "../../assets/icons/menu.svg";
 import trash from "../../assets/icons/trash.svg";
 import arrow_right from "../../assets/icons/arrow_right.svg";
 import monitor from "../../assets/img/monitor.webp";
 import close from "../../assets/icons/close.svg";
 import arrow_dropdown from "../../assets/icons/arrow_drop_down.svg";
+import reset from "../../assets/icons/reset.svg";
 
 interface Filters{
     product_types: string[],
@@ -23,13 +22,14 @@ const Products = () => {
     const [filterList, setFilterList] = useState<Filters | null>(null);
     const [selectedType, setSelectedType] = useState<string | null>(null);
     const [selectedSpecification, setSelectedSpecification] = useState<string | null>(null);
+    const [totalProducts, setTotalProducts] = useState<number | null>(null);
 
     const dispatch = useAppDispatch();
     const {list: products, loading: productLoading, error: productError} = useAppSelector((state: RootState) => state.products);
 
     useEffect(() => {
-        dispatch(fetchProducts({limit: 5, offset: 0}));
-    }, [dispatch])
+        dispatch(fetchProducts({productType: selectedType, specification: selectedSpecification, limit: 5, offset: 0}));
+    }, [dispatch, selectedType, selectedSpecification])
     
     useEffect(() => {
         const fetchFilters = async () => {
@@ -50,7 +50,11 @@ const Products = () => {
         fetchFilters();
     }, [])
 
-    const arr = [0, 0, 0, 0, 0];
+    useEffect(() => {
+        if(products.length > 0){
+            setTotalProducts(products[0].total_products);
+        }
+    }, [dispatch, products])
 
     if(productLoading) return <h1>Loading...</h1>
     if(productError) return <h1>Error...</h1>
@@ -75,7 +79,7 @@ const Products = () => {
                     className="fs-4 bg-success text-white rounded-circle border-0 d-flex align-items-center
                 justify-content-center"
                     style={{ width: "40px", height: "40px" }}>+</button>
-                <h1 className="fs-2 m-0">Products / {products.length}</h1>
+                <h1 className="fs-2 m-0">Products / {totalProducts ? totalProducts : "Loading..."}</h1>
                 <div className="d-flex align-items-center gap-1 ">
                     <label htmlFor="specification">Type</label>
                     <div className="dropdown">
@@ -101,10 +105,15 @@ const Products = () => {
                             }
                         </ul>
                     </div>
+                    <button 
+                    onClick={() => setSelectedType(null)}
+                    className="border-1 bg-light rounded">
+                        <img src={reset} alt="Reset settings" />
+                    </button>
                 </div>
                 <div className="d-flex align-items-center gap-1">
                     <label htmlFor="specification">Specification</label>
-                    <div className="position-relative d-flex align-items-center">
+                    <div className="position-relative d-flex align-items-center gap-1">
                         <div className="dropdown">
                             <button className="
                             bg-white text-black 
@@ -128,12 +137,17 @@ const Products = () => {
                                 }
                             </ul>
                         </div>
+                        <button
+                        onClick={() => setSelectedSpecification(null)}
+                         className="border-1 bg-light rounded">
+                            <img src={reset} alt="Reset settings" />
+                        </button>
                     </div>
                 </div>
             </div>
             <div className="d-flex flex-row align-items-start gap-1 " style={{ height: "70px" }}>
                 <div className=" d-flex flex-column gap-2 custom-flex-grow-1 ">
-                    {products.map(product => (
+                    {products.length > 0 ? products.map(product => (
                         <div 
                         style={{minWidth:"200px", whiteSpace: "nowrap"}}
                         className="d-flex justify-content-between gap-2 align-items-center border-top p-2">
@@ -169,7 +183,10 @@ const Products = () => {
                             </div>
                             <img src={trash} alt="Trash icon" />
                         </div>
-                    ))}
+                    ))
+                :
+                <h1>No results</h1>
+                }
                 </div>
             </div>
         </section>
