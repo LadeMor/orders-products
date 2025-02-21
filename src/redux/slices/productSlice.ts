@@ -11,8 +11,8 @@ interface Price{
 interface Guarantees{
     id:number,
     productId: number,
-    startDate: string,
-    endDate: string
+    start_date: string,
+    end_date: string
 }
 
 export interface Product {
@@ -57,7 +57,7 @@ export const fetchProductByOrderID = createAsyncThunk("products/fetchProductByOr
             throw Error("Failed to get products");
         }
     }catch(err){
-
+        console.error("Failed to fetch products by order id: " + err);
     }
 })
 

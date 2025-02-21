@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Product, fetchProducts } from "../../redux/slices/productSlice";
 import { RootState } from "../../redux/store";
-import { formatItemDate, formatItemTime } from "../../utils/dateUtils";
+import { addZero, formatItemDate, formatItemTime } from "../../utils/dateUtils";
+
 
 
 import menu from "../../assets/icons/menu.svg";
@@ -12,7 +13,16 @@ import monitor from "../../assets/img/monitor.webp";
 import close from "../../assets/icons/close.svg";
 import arrow_dropdown from "../../assets/icons/arrow_drop_down.svg";
 
+interface Filters{
+    product_types: string[],
+    specifications: string[]
+}
+
 const Products = () => {
+
+    const [filterList, setFilterList] = useState<Filters | null>(null);
+    const [selectedType, setSelectedType] = useState<string | null>(null);
+    const [selectedSpecification, setSelectedSpecification] = useState<string | null>(null);
 
     const dispatch = useAppDispatch();
     const {list: products, loading: productLoading, error: productError} = useAppSelector((state: RootState) => state.products);
@@ -20,6 +30,25 @@ const Products = () => {
     useEffect(() => {
         dispatch(fetchProducts({limit: 5, offset: 0}));
     }, [dispatch])
+    
+    useEffect(() => {
+        const fetchFilters = async () => {
+           try{
+            const response = await fetch(`http://localhost:3002/api/products/filters`);
+
+            if(response.ok){
+                const data = await response.json();
+                setFilterList(data[0]);
+            }else{
+                throw Error("Failed to fetch filters");
+            }
+
+           }catch(err){
+            console.log(err);
+           }
+        }
+        fetchFilters();
+    }, [])
 
     const arr = [0, 0, 0, 0, 0];
 
@@ -30,6 +59,13 @@ const Products = () => {
         return product.prices.map(price => (
             <p className="m-0" style={{ color: `${price.isDefault ? null : "grey"}` }}>{price.value} {price.symbol}</p>
         ))
+    }
+
+    const formatProductDate = (date: string):string => {
+        const selectedProductDate = new Date(date);
+        return `${addZero(selectedProductDate.getDate())}/
+        ${addZero(selectedProductDate.getMonth() + 1)}/
+        ${selectedProductDate.getFullYear()}`
     }
 
     return (
@@ -49,13 +85,19 @@ const Products = () => {
                         dropdown-toggle"
                             style={{ maxWidth: "400px" }}
                             type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Type
+                            {selectedType ? selectedType : "Type"}
                         </button>
                         <ul className="dropdown-menu">
                             {
-                                arr.map(item => (
-                                    <li className="dropdown-item">Type 1</li>
+                                filterList !== null ? filterList.product_types.map((type, index) => (
+                                    <li 
+                                    key={index} 
+                                    className="dropdown-item"
+                                    onClick={() => setSelectedType(type)}
+                                    >{type}</li>
                                 ))
+                                :
+                                <h2>Loading...</h2>
                             }
                         </ul>
                     </div>
@@ -70,13 +112,19 @@ const Products = () => {
                             dropdown-toggle"
                                 style={{ maxWidth: "400px" }}
                                 type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Specification
+                                {selectedSpecification ? selectedSpecification : "Specification"}
                             </button>
                             <ul className="dropdown-menu">
                                 {
-                                    arr.map(item => (
-                                        <li className="dropdown-item">Specification 1</li>
+                                    filterList ? filterList.specifications.map((specification, index) => (
+                                        <li 
+                                        className="dropdown-item"
+                                        key={index}
+                                        onClick={() => setSelectedSpecification(specification)}
+                                        >{specification}</li>
                                     ))
+                                    :
+                                    <h2>Loading...</h2>
                                 }
                             </ul>
                         </div>
@@ -100,10 +148,10 @@ const Products = () => {
                                 <h2 className="m-0 fs-5 text-success">Available</h2>
                                 <div>
                                     <p className="m-0 d-flex align-items-center justify-content-between gap-2">
-                                        <span style={{ color: "grey" }}>from</span> {product.guarantees[0].startDate}
+                                        <span style={{ color: "grey" }}>from {formatProductDate(product.guarantees[0].start_date)}</span> 
                                     </p>
                                     <p className="m-0 d-flex align-items-center justify-content-between gap-2">
-                                        <span style={{ color: "grey" }}>to</span> {product.guarantees[0].endDate}
+                                        <span style={{ color: "grey" }}>to {formatProductDate(product.guarantees[0].end_date)}</span> 
                                     </p>
                                 </div>
                                 <p style={{ color: "grey" }} className="m-0">{product.is_new ? "New" : "Used"}</p>

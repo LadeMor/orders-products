@@ -81,14 +81,15 @@ const Orders = () => {
                     style={{ width: "40px", height: "40px" }}>+</button>
                 <h1 className="fs-2 m-0">Orders / {orders.length}</h1>
             </div>
-            <div className="d-flex flex-row align-items-start gap-1 " style={{ height: "70px" }}>
-                <div className=" d-flex flex-column gap-2 custom-flex-grow-1">
+            <div className=" d-flex flex-row align-items-start gap-1 " style={{ height: "70px" }}>
+                <div className="d-flex flex-column gap-2 custom-flex-grow-1">
                     {orders.map((order, index) => (
                         <div
                             onClick={() => onOrderClick(order.id)}
                             key={index}
                             style={{ whiteSpace: "nowrap", minWidth:"100px"}}
                             className="
+                                
                                     d-flex align-items-center 
                                     justify-content-between
                                     border
@@ -102,16 +103,14 @@ const Orders = () => {
                             align-items-center 
                             justify-content-between           
                             gap-3 
-                            p-2">
+                            p-2
+                            w-100">
                                 {
                                     !displayProductData ?
                                         <h2 className="fs-4 m-0 text-decoration-underline"
                                             style={{ cursor: "pointer" }}
                                         >
-                                            {order.title}ddfdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
-                                            fdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
-                                            fdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
-                                            fdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
+                                            {order.title}
                                         </h2>
                                         :
                                         null
