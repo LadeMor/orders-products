@@ -25,6 +25,8 @@ export interface Product {
     price: number,
     specification: string,
     order_id: number,
+    order_name: string,
+    date: string,
     prices: Price[],
     guarantees: Guarantees[]
 }

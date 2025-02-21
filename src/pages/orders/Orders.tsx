@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { fetchOrders, selectOrder } from "../../redux/slices/orderSlice";
 import { fetchProducts, fetchProductByOrderID } from "../../redux/slices/productSlice";
 import { RootState } from "../../redux/store";
-import { selectCurrentMonthName, addZero } from "../../utils/dateUtils";
+import { selectCurrentMonthName, addZero, formatItemDate, formatItemTime } from "../../utils/dateUtils";
 import { Product } from "../../redux/slices/productSlice";
 
 import menu from "../../assets/icons/menu.svg";
@@ -14,11 +14,8 @@ import close from "../../assets/icons/close.svg";
 
 const Orders = () => {
 
-    const arr = [0, 0, 0, 0, 0]
-
     const [displayProductData, setDisplayProductData] = useState<boolean>(false);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
-    const [selectedOrderProductList, setSelectedOrderProductList] = useState<Product[] | null>(null);
 
     const dispatch = useAppDispatch();
     const { list: orders, loading: ordersLoading, error: ordersError } = useAppSelector((state: RootState) => state.orders);
@@ -33,13 +30,6 @@ const Orders = () => {
             dispatch(fetchProductByOrderID({ orderId: selectedOrderId, limit: 5, offset: 0 }))
         }
     }, [selectedOrderId, dispatch])
-
-    const formatOrderDate = (date: string): string => {
-        const dateToFormat = new Date(date);
-        return `${addZero(dateToFormat.getDate())} / 
-        ${selectCurrentMonthName(dateToFormat.getMonth()).slice(0, 3)} / 
-        ${dateToFormat.getFullYear()}`
-    }
 
     const onOrderClick = (orderId: number): void => {
         setSelectedOrderId(orderId);
@@ -83,35 +73,34 @@ const Orders = () => {
     }
 
     return (
-        <section className="p-4 w-100">
+        <section className="p-4 w-100 overflow-auto">
             <div className="d-flex align-items-center gap-2 mb-4">
                 <button
                     className="fs-4 bg-success text-white rounded-circle border-0 d-flex align-items-center
                 justify-content-center"
                     style={{ width: "40px", height: "40px" }}>+</button>
-                <h1 className="fs-2 m-0">Orders / 25</h1>
+                <h1 className="fs-2 m-0">Orders / {orders.length}</h1>
             </div>
-            <div className=" d-flex flex-row align-items-start gap-1" style={{ height: "70px" }}>
-                <div className=" h-100 w-100 d-flex flex-column gap-2 custom-flex-grow-1">
+            <div className="d-flex flex-row align-items-start gap-1 " style={{ height: "70px" }}>
+                <div className=" d-flex flex-column gap-2 custom-flex-grow-1">
                     {orders.map((order, index) => (
                         <div
                             onClick={() => onOrderClick(order.id)}
                             key={index}
+                            style={{ whiteSpace: "nowrap", minWidth:"100px"}}
                             className="
                                     d-flex align-items-center 
                                     justify-content-between
-                                    w-100
-                                    h-100
                                     border
                                     rounded
                                     custom-order-hover 
                                     cursor-pointer 
+                                    
                                     ">
                             <div className="
                             d-flex 
                             align-items-center 
-                            justify-content-between 
-                            w-100
+                            justify-content-between           
                             gap-3 
                             p-2">
                                 {
@@ -119,7 +108,10 @@ const Orders = () => {
                                         <h2 className="fs-4 m-0 text-decoration-underline"
                                             style={{ cursor: "pointer" }}
                                         >
-                                            {order.title}
+                                            {order.title}ddfdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
+                                            fdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
+                                            fdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
+                                            fdfwfwefew fewwefwefw efwefwefwe fv fvioi dfviojvmo dmoimv 
                                         </h2>
                                         :
                                         null
@@ -130,13 +122,13 @@ const Orders = () => {
                                         style={{ width: "40px" }}
                                         className="border rounded-circle p-1" src={menu} alt="Menu icon" />
                                     <span>
-                                        <h2 className="m-0 fs-4">23</h2>
+                                        <h2 className="m-0 fs-4">{order.product_count}</h2>
                                         <p className="m-0">Products</p>
                                     </span>
                                 </span>
                                 <span>
-                                    <p className="m-0">04/12</p>
-                                    <p className="m-0">{formatOrderDate(order.date)}</p>
+                                    <p className="m-0">{formatItemTime(order.date)}</p>
+                                    <p className="m-0">{formatItemDate(order.date)}</p>
                                 </span>
                                 {
                                     !displayProductData ?

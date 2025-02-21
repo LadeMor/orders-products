@@ -21,3 +21,15 @@ export const addZero = (number: number): string => {
 export const formatTime = (hours: number, minutes: number): string => {
     return `${hours}:${addZero(minutes)}`;
 }
+
+export const formatItemDate = (date: string): string => {
+    const dateToFormat = new Date(date);
+    return `${addZero(dateToFormat.getDate())} / 
+    ${selectCurrentMonthName(dateToFormat.getMonth()).slice(0, 3)} / 
+    ${dateToFormat.getFullYear()}`
+}
+
+export const formatItemTime = (date: string): string => {
+    const dateTimeToFormat = new Date(date);
+    return `${addZero(dateTimeToFormat.getMinutes())}/${addZero(dateTimeToFormat.getHours())}`
+}

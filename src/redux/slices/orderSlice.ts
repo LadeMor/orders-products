@@ -6,6 +6,7 @@ export interface Order{
     date: string,
     total_price_uah: number,
     total_price_usd: number,
+    product_count: number,
     productsIds: number[]
 }
 
