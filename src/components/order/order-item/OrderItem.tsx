@@ -10,6 +10,7 @@ interface OrderProps {
     order: Order,
     index: number,
     onOrderClick: (orderId: number) => void,
+    onDeleteClick: (order: Order) => void,
     displayProductData: boolean,
     selectedOrderId: number | null
 }
@@ -19,11 +20,11 @@ const OrderItem: React.FC<OrderProps> = ({
     index,
     onOrderClick,
     displayProductData,
-    selectedOrderId }) => {
+    selectedOrderId, 
+    onDeleteClick }) => {
     return (
         <>
             <div
-                onClick={() => onOrderClick(order.id)}
                 key={index}
                 style={{ whiteSpace: "nowrap", minWidth: "100px" }}
                 className="
@@ -54,6 +55,7 @@ const OrderItem: React.FC<OrderProps> = ({
                             null
                     }
                     <span className="d-flex align-items-center gap-2"
+                     onClick={() => onOrderClick(order.id)}
                         style={{ cursor: "pointer" }}>
                         <img
                             style={{ width: "40px" }}
@@ -77,7 +79,7 @@ const OrderItem: React.FC<OrderProps> = ({
                             null
                     }
                     {
-                        !displayProductData ? <img style={{ cursor: "pointer" }} src={trash} alt="Trash icon" /> : null
+                        !displayProductData ? <img onClick={() => onDeleteClick(order)} style={{ cursor: "pointer" }} src={trash} alt="Trash icon" /> : null
                     }
                 </div>
                 {
@@ -94,6 +96,7 @@ const OrderItem: React.FC<OrderProps> = ({
                         null
                 }
             </div>
+
         </>
     );
 }

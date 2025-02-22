@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { fetchOrders } from "../../../redux/slices/orderSlice";
+import { Order, fetchOrders } from "../../../redux/slices/orderSlice";
 import { fetchProductByOrderID } from "../../../redux/slices/productSlice";
 import { RootState } from "../../../redux/store";
+import ErrorBoundary from "../../errors/ErrorBoundary";
 
 import close from "../../../assets/icons/close.svg";
 import OrderItem from "../order-item/OrderItem";
 import ProductList from "../../product/product-list/ProductList";
+import trash_red from "../../../assets/icons/trash_red.svg";
 
 const OrderList = () => {
 
@@ -17,6 +19,7 @@ const OrderList = () => {
     const [totalOrders, setTotalOrders] = useState<number | null>(null);
     const [displayProductData, setDisplayProductData] = useState<boolean>(false);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+    const [selectedDeleteOrder, setSelectedDeleteOrder] = useState<Order | null>(null);
 
     useEffect(() => {
         dispatch(fetchOrders({ limit: 5, offset: 0 }));
@@ -47,6 +50,10 @@ const OrderList = () => {
         setDisplayProductData(false);
     }
 
+    const onDeleteClick = (order: Order): void => {
+        console.log(order);
+        setSelectedDeleteOrder(order);
+    }
 
     return (
         <>
@@ -58,15 +65,21 @@ const OrderList = () => {
                 <h1 className="fs-2 m-0">Orders / {totalOrders ? totalOrders : "Loading..."}</h1>
             </div>
             <div className=" d-flex flex-row align-items-start gap-1 " style={{ height: "70px" }}>
-                <div className="h-100 d-flex flex-column gap-2 custom-flex-grow-1">
+                <div className="h-100 d-flex flex-column gap-2 custom-flex-grow-1 position-relative">
                     {orders.map((order, index) => (
-                        <OrderItem
-                            order={order}
-                            index={index}
-                            onOrderClick={onOrderClick}
-                            displayProductData={displayProductData}
-                            selectedOrderId={selectedOrderId}
-                        />
+                        <ErrorBoundary
+                            key={index}
+                            fallback={<div>Error loading order {order.id}</div>}
+                        >
+                            <OrderItem
+                                order={order}
+                                index={index}
+                                onOrderClick={onOrderClick}
+                                displayProductData={displayProductData}
+                                selectedOrderId={selectedOrderId}
+                                onDeleteClick={onDeleteClick}
+                            />
+                        </ErrorBoundary>
                     ))}
                 </div>
                 {
@@ -108,6 +121,51 @@ const OrderList = () => {
                         null
                 }
             </div>
+            {
+                selectedDeleteOrder ?
+                    <div
+                        style={{ backgroundColor: "rgb(0, 0, 0, 0.5)", left: "-20px" }}
+                        className="position-absolute top-0 w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div className="bg-white rounded position-relative">
+                            <div className="p-3">
+                                <h3>Are you sure you want to delete this order?</h3>
+                                {
+                                    orders.length > 0
+                                        ?
+                                        <ErrorBoundary key={0} fallback={<div>Error loading order {selectedDeleteOrder.id}</div>}>
+                                            <OrderItem
+                                                order={selectedDeleteOrder}
+                                                index={0}
+                                                onOrderClick={() => { console.log(1) }}
+                                                displayProductData={displayProductData}
+                                                selectedOrderId={selectedDeleteOrder.id}
+                                                onDeleteClick={onDeleteClick}
+                                            />
+                                        </ErrorBoundary>
+                                        :
+                                        null
+                                }
+                            </div>
+                            <div className="bg-success p-3 d-flex justify-content-end align-items-center gap-2">
+                                <button 
+                                onClick={() => setSelectedDeleteOrder(null)} 
+                                className="text-white border-0 bg-transparent">Cancel</button>
+                                <button
+                                onClick={() => setSelectedDeleteOrder(null)} 
+                                 className="text-danger border-0 bg-white px-3 py-2 rounded-pill shadow">
+                                    <img src={trash_red} alt="Trash" />
+                                    Delete
+                                </button>
+                            </div>
+                            <button
+                            onClick={() => setSelectedDeleteOrder(null)} 
+                            style={{top:"-20px", right:"-20px", width:"40px", height: "40px"}}
+                            className="position-absolute rounded-circle bg-white border-0 shadow" >+</button>
+                        </div>
+                    </div>
+                    :
+                    null
+            }
         </>
     );
 }
