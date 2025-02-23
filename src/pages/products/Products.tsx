@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { fetchProducts } from "../../redux/slices/productSlice";
 import { RootState } from "../../redux/store";
+import { API_URL } from "../../utils/constants";
 
 import reset from "../../assets/icons/reset.svg";
 import ProductList from "../../components/product/product-list/ProductList";
@@ -29,7 +30,7 @@ const Products = () => {
     useEffect(() => {
         const fetchFilters = async () => {
             try {
-                const response = await fetch(`http://localhost:3002/api/products/filters`);
+                const response = await fetch(`${API_URL}/api/products/filters`);
 
                 if (response.ok) {
                     const data = await response.json();

@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { API_URL } from "../../utils/constants";
 
 export interface Order{
     id: number,
@@ -26,7 +27,7 @@ const initialState : OrdersState = {
 }
 
 export const fetchOrders = createAsyncThunk("orders/fetchOrders", async ({limit, offset}: {limit: number; offset: number}) => {
-    const response = await fetch(`http://localhost:3002/api/orders?limit=${limit}&offset=${offset}`);
+    const response = await fetch(`${API_URL}/api/orders?limit=${limit}&offset=${offset}`);
     return response.json();
 });
 

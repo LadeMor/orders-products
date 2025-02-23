@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { API_URL } from "../../utils/constants";
 
 interface Price {
     id: number,
@@ -54,7 +55,7 @@ export const fetchProducts = createAsyncThunk("products/fetchProducts", async (
     params.append("offset", offset.toString());
 
     const response = await fetch(
-        `http://localhost:3002/api/products?${params.toString()}`
+        `${API_URL}/api/products?${params.toString()}`
     );
 
     return response.json();
@@ -62,7 +63,7 @@ export const fetchProducts = createAsyncThunk("products/fetchProducts", async (
 
 export const fetchProductByOrderID = createAsyncThunk("products/fetchProductByOrderID", async ({ orderId, limit, offset }: { orderId: number, limit: number, offset: number }) => {
     try {
-        const response = await fetch(`http://localhost:3002/api/products/order/${orderId}?limit=${limit}&offset=${offset}`);
+        const response = await fetch(`${API_URL}/api/products/order/${orderId}?limit=${limit}&offset=${offset}`);
         if (response.ok) {
             return response.json();
         } else {
